@@ -1,15 +1,16 @@
-site_name: Scaler DSML Course
-site_description: Documentation for the Scaler Data Science and Machine Learning Course.
-site_author: Your Name # Replace with your name
+site_name: Sathish Kumar's Machine Learning and Data Science Learnings
+site_description: Documentation for the Data Science and Machine Learning Course.
+site_author: Sathish Kumar # Replace with your name
 repo_url: https://github.com/your-username/Scaler-DSML-Course # Replace with your repo URL
-repo_name: Scaler-DSML-Course
+repo_name: Data Science and Machine Learning Repo
 
 nav:
   - Home: index.md
-  - Foundational Concepts:
-    - Introduction and CheetSheets: 'Foundational Concepts/Introduction and CheetSheets/README.md'
-    - SQL and BigQuery: 'Foundational Concepts/SQL and BigQuery/README.md'
-    - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'
+  - DataBases,SQL & BigQuery: 
+    - Databases: 'docs/Databases/db-sql-bigquery-index.md'
+    - SQL : 'docs/Databases/sql.md'
+    - BigQuery: 'docs/Databases/bigquery.md'
+  - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'
   - Python Programming:
     - Beginner Python 1: 'Python Programming/Beginner Python 1/README.md'
     - Beginner Python 2: 'Python Programming/Beginner Python 2/README.md'
