@@ -1,0 +1,113 @@
+site_name: Scaler DSML Course
+site_description: Documentation for the Scaler Data Science and Machine Learning Course.
+site_author: Your Name # Replace with your name
+repo_url: https://github.com/your-username/Scaler-DSML-Course # Replace with your repo URL
+repo_name: Scaler-DSML-Course
+
+nav:
+  - Home: index.md
+  - Foundational Concepts:
+    - Introduction and CheetSheets: 'Foundational Concepts/Introduction and CheetSheets/README.md'
+    - SQL and BigQuery: 'Foundational Concepts/SQL and BigQuery/README.md'
+    - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'
+  - Python Programming:
+    - Beginner Python 1: 'Python Programming/Beginner Python 1/README.md'
+    - Beginner Python 2: 'Python Programming/Beginner Python 2/README.md'
+    - Advanced Python: 'Python Programming/Advanced Python/README.md'
+  - Data Analytics and Statistics:
+    - Data Analytics and Visualisation - Probability and Stats: 'Data Analytics and Statistics/Data Analytics and Visualisation - Probability and Stats/README.md'
+    - Product Analytics: 'Data Analytics and Statistics/Product Analytics/README.md'
+  - Machine Learning Fundamentals:
+    - Maths for ML: 'Machine Learning Fundamentals/Maths for ML/README.md'
+    - Intro to ML and NN: 'Machine Learning Fundamentals/Intro to ML and NN/README.md'
+  - Supervised Learning:
+    - Supervised Algorithms: 'Supervised Learning/Supervised Algorithms/README.md'
+    - Advanced Supervised Algorithms: 'Supervised Learning/Advanced Supervised Algorithms/README.md'
+  - Unsupervised Learning and Recommender Systems:
+    - Unsupervised and RecSys: 'Unsupervised Learning and Recommender Systems/Unsupervised and RecSys/README.md'
+  - Advanced Topics:
+    - MLOps: 'Advanced Topics/MLOps/README.md'
+    - Neural Networks: 'Advanced Topics/Neural Networks/README.md'
+    - Computer Vision: 'Advanced Topics/Computer Vision/README.md'
+    - Natural Language Processing: 'Advanced Topics/Natural Language Processing/README.md'
+  - Topics to Explore:
+    - DSA: 'Topics to Explore/DSA/README.md'
+    - Agentic AI: 'Topics to Explore/Agentic AI/README.md'
+    - Reinforcement Learning: 'Topics to Explore/Reinforcement Learning/README.md'
+
+#theme:
+#  name: material
+#  palette:
+#    - scheme: default
+#      toggle:
+#        icon: material/brightness-7
+#        name: Switch to dark mode
+#    - scheme: slate
+#      toggle:
+#        icon: material/brightness-4
+#        name: Switch to light mode
+#  features:
+#    - navigation.tabs
+#    - navigation.sections
+#    - toc.integrate
+#    - navigation.top
+#    - search.suggest
+#    - search.highlight
+#    - content.tabs.link
+#    - content.code.annotation
+#    - content.code.copy
+
+theme:
+  name: 'material'
+  custom_dir: 'docs/theme'
+  palette:
+  - media: "(prefers-color-scheme)"
+    scheme: default
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb
+      name: "Switch to light mode"
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb-outline
+      name: "Switch to dark mode"
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: pink
+    accent: pink
+    toggle:
+      icon: material/lightbulb-auto-outline
+      name: "Switch to system preference"
+  features:
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+    - announce.dismiss
+    - navigation.tabs
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - toc.follow
+  logo: 'logo-white.svg'
+  favicon: 'favicon.png'
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+
+repo_name: Scaler/DSML Course
+repo_url: https://github.com/sathishkumar19/Scaler-DSML-Course
+edit_uri: edit/main/docs/
