@@ -36,5 +36,5 @@ jobs:
 #        run: bundle install
 #        working-directory: ./website
 
-      - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+#      - name: Build with Jekyll
+#        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
