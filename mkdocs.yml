@@ -1,7 +1,7 @@
 site_name: Sathish Kumar's Machine Learning and Data Science Learnings
 site_description: Documentation for the Data Science and Machine Learning Course.
 site_author: Sathish Kumar # Replace with your name
-repo_url: https://github.com/your-username/Scaler-DSML-Course # Replace with your repo URL
+repo_url: https://github.com/sathishkumar19/Scaler-DSML-Course # Replace with your repo URL
 repo_name: Data Science and Machine Learning Repo
 
 nav:
