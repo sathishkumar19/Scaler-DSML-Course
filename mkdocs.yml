@@ -7,34 +7,33 @@ repo_name: Data Science and Machine Learning Repo
 nav:
   - Home: index.md
   - DataBases,SQL & BigQuery: 
-    - Databases: 'docs/Databases/db-sql-bigquery-index.md'
-    - SQL : 'docs/Databases/sql.md'
-    - BigQuery: 'docs/Databases/bigquery.md'
-  - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'
+    - Databases: 'Databases/db-sql-bigquery-index.md'
+    - SQL : 'Databases/sql.md'
+    - BigQuery: 'Databases/bigquery.md'
+#  - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'
   - Python Programming:
-    - Beginner Python 1: 'Python Programming/Beginner Python 1/README.md'
-    - Beginner Python 2: 'Python Programming/Beginner Python 2/README.md'
-    - Advanced Python: 'Python Programming/Advanced Python/README.md'
-  - Data Analytics and Statistics:
-    - Data Analytics and Visualisation - Probability and Stats: 'Data Analytics and Statistics/Data Analytics and Visualisation - Probability and Stats/README.md'
-    - Product Analytics: 'Data Analytics and Statistics/Product Analytics/README.md'
-  - Machine Learning Fundamentals:
-    - Maths for ML: 'Machine Learning Fundamentals/Maths for ML/README.md'
-    - Intro to ML and NN: 'Machine Learning Fundamentals/Intro to ML and NN/README.md'
-  - Supervised Learning:
-    - Supervised Algorithms: 'Supervised Learning/Supervised Algorithms/README.md'
-    - Advanced Supervised Algorithms: 'Supervised Learning/Advanced Supervised Algorithms/README.md'
-  - Unsupervised Learning and Recommender Systems:
-    - Unsupervised and RecSys: 'Unsupervised Learning and Recommender Systems/Unsupervised and RecSys/README.md'
-  - Advanced Topics:
-    - MLOps: 'Advanced Topics/MLOps/README.md'
-    - Neural Networks: 'Advanced Topics/Neural Networks/README.md'
-    - Computer Vision: 'Advanced Topics/Computer Vision/README.md'
-    - Natural Language Processing: 'Advanced Topics/Natural Language Processing/README.md'
-  - Topics to Explore:
-    - DSA: 'Topics to Explore/DSA/README.md'
-    - Agentic AI: 'Topics to Explore/Agentic AI/README.md'
-    - Reinforcement Learning: 'Topics to Explore/Reinforcement Learning/README.md'
+    - Beginner Python 1: 'Python/python1.md'
+    - Intermediate Python 2: 'Python/python2.md'
+#  - Data Analytics and Statistics:
+#    - Data Analytics and Visualisation - Probability and Stats: 'Data Analytics and Statistics/Data Analytics and Visualisation - Probability and Stats/README.md'
+#    - Product Analytics: 'Data Analytics and Statistics/Product Analytics/README.md'
+#  - Machine Learning Fundamentals:
+#    - Maths for ML: 'Machine Learning Fundamentals/Maths for ML/README.md'
+#    - Intro to ML and NN: 'Machine Learning Fundamentals/Intro to ML and NN/README.md'
+#  - Supervised Learning:
+#    - Supervised Algorithms: 'Supervised Learning/Supervised Algorithms/README.md'
+#    - Advanced Supervised Algorithms: 'Supervised Learning/Advanced Supervised Algorithms/README.md'
+#  - Unsupervised Learning and Recommender Systems:
+#    - Unsupervised and RecSys: 'Unsupervised Learning and Recommender Systems/Unsupervised and RecSys/README.md'
+#  - Advanced Topics:
+#    - MLOps: 'Advanced Topics/MLOps/README.md'
+#    - Neural Networks: 'Advanced Topics/Neural Networks/README.md'
+#    - Computer Vision: 'Advanced Topics/Computer Vision/README.md'
+#    - Natural Language Processing: 'Advanced Topics/Natural Language Processing/README.md'
+#  - Topics to Explore:
+#    - DSA: 'Topics to Explore/DSA/README.md'
+#    - Agentic AI: 'Topics to Explore/Agentic AI/README.md'
+#    - Reinforcement Learning: 'Topics to Explore/Reinforcement Learning/README.md'
 
 #theme:
 #  name: material
@@ -99,7 +98,7 @@ theme:
     - navigation.tracking
     - search.suggest
     - toc.follow
-  logo: 'logo-white.svg'
+  logo: 'logos/sathish.jpg'
   favicon: 'favicon.png'
 
 markdown_extensions:
@@ -109,6 +108,6 @@ markdown_extensions:
   - attr_list
   - md_in_html
 
-repo_name: Scaler/DSML Course
+repo_name: Sathish Kumar Github Repo
 repo_url: https://github.com/sathishkumar19/Scaler-DSML-Course
 edit_uri: edit/main/docs/
