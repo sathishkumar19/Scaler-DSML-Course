@@ -229,6 +229,15 @@ LIMIT 2 OFFSET 3;
 
 #### Day 4 Assignments - Subqueries , Grouby and Aggregation 
 
+**ROUND**
+
 SELECT employee_id , round(ifnull(commission_pct,0),2) AS commission_pct
  FROM employees
  ORDER BY employee_id;
+
+**SUBQUERIES**
+
+ SELECT employee_id, CONCAT(first_name,' ', last_name) as full_name,salary from
+employees e1 join departments d1
+on e1.department_id=d1.department_id
+and d1.department_name in ( 'Administration', 'Marketing', 'Human Resources');

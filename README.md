@@ -9,7 +9,7 @@ title: Scaler DSML Course
 
 1.  **Foundational Concepts**
     *   [Introduction and CheetSheets](#introduction-and-cheetsheets)
-    *   [SQL and BigQuery](./docs/Databases/db-sql-bigquery-index.md)
+    *   ![SQL and BigQuery](./docs/Databases/db-sql-bigquery-index.md)
     *   [Tableau and Excel](#tableau-and-excel)
 2.  **Python Programming**
     *   [Beginner Python 1](#beginner-python-1)
