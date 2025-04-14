@@ -8,6 +8,7 @@ nav:
   - Home: index.md
   - DataBases,SQL & BigQuery: 
     - Databases: 'Databases/db-sql-bigquery-index.md'
+    - Data Hosting: 'Databases/data-hosting.md'
     - SQL : 'Databases/sql.md'
     - BigQuery: 'Databases/bigquery.md'
 #  - Tableau and Excel: 'Foundational Concepts/Tableau and Excel/README.md'

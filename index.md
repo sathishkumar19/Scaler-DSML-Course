@@ -11,3 +11,11 @@ This site provides a comprehensive overview of the course structure, modules, an
 ## Getting Started
 
 [Add instructions on how to get started with the course.]
+
+
+## My Intent
+
+- Be Handson Programmer ( Python, SQL)
+- Be a Good AI Deisgner 
+- Master Advanced concepts like Agentic , Generative and Deep learning techniques
+- Comfortable with ML ops and AI platforms , Inferncing, 
