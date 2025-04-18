@@ -3,9 +3,9 @@ layout: default
 title: Scaler DSML Course
 ---
 
-# Scaler Data Science and Machine Learning Course
+### Scaler Data Science and Machine Learning Course
 
-# Table of Contents
+#### Table of Contents
 
 1.  **Foundational Concepts**
     *   [Introduction and CheetSheets](#introduction-and-cheetsheets)

@@ -87,15 +87,20 @@ Definition of the commands
     - SET TRANSACTION: Places a name on a transaction.
 
 
+#### SQL Order of Execution
+
+FROM and/or JOIN clause
+WHERE clause
+GROUP BY clause
+HAVING clause
+SELECT clause
+DISTINCT clause
+ORDER BY clause
+LIMIT and/or OFFSET clause
+
 --- 
 
-Commands tought in classes
 
-select * from table 
-Where
-concat
-substr
-initcap 
 
 ----
 
@@ -241,3 +246,404 @@ SELECT employee_id , round(ifnull(commission_pct,0),2) AS commission_pct
 employees e1 join departments d1
 on e1.department_id=d1.department_id
 and d1.department_name in ( 'Administration', 'Marketing', 'Human Resources');
+
+**NOT IN**
+SELECT * from employees
+WHERE employee_id not in (select employee_id from job_history)
+ORDER BY employee_id asc 
+
+**SUBQUERIES** 
+
+SELECT  CONCAT(first_name,' ', last_name) as full_name, salary, department_id, job_id
+FROM employees
+WHERE job_id = (SELECT job_id FROM employees WHERE employee_id = 107)
+ORDER BY full_name
+
+**SUBQUERIES and CASE Statement**
+SELECT employee_id, first_name, last_name, salary, (CASE WHEN job_id IN ('FI_ACCOUNT', 'AC_ACCOUNT') THEN 1 ELSE 0 END) as Accountant
+from employees
+ORDER BY employee_id
+
+**CASE STATEMENT with Operators**
+
+SELECT employee_id, salary , 
+(CASE When salary >  20000 THEN 'Class A'
+  When salary BETWEEN 10000 AND 20000 THEN 'Class B'
+  When salary <  10000 THEN 'Class C'
+END
+)AS Salary_bin
+FROM employees
+ORDER BY employee_id
+
+**MAX Function**
+
+SELECT MAX(num) as num
+FROM
+    (SELECT num
+    FROM mynumbers
+    GROUP BY num
+    HAVING COUNT(num) =1) AS t
+
+**CASE with Condition**
+
+SELECT x, y, z,
+    CASE
+        WHEN (x + y > z) AND (y + z > x) AND (x + z > y) THEN 'Yes'
+        ELSE 'No'
+    END AS triangle
+FROM triangle
+ORDER BY x, y, z ASC
+
+**CONDITION ** 
+
+select round(sum(long_w),4) as sum
+from station
+where long_w between 38.7880 and 137.2345;
+
+**Condition**
+
+SELECT
+earnings, count(*) as num_employees
+FROM(SELECT  (salary*months) AS earnings, employee_id
+FROM employee )temp
+GROUP BY earnings
+HAVING earnings = (SELECT max(salary*months) AS earnings FROM employee)
+
+**IFNULL**
+
+SELECT employeeNumber,firstName,lastName,IFNULL(email,'N/A') as email,IFNULL(phone,'N/A') as phone
+FROM employees
+ORDER BY employeeNumber 
+
+**JOIN**
+
+SELECT employee_id, first_name, last_name, job_id 
+FROM employees e 
+JOIN departments d ON e.department_id = d.department_id 
+JOIN locations l ON d.location_id = l.location_id 
+WHERE l.city = 'Seattle' 
+ORDER BY employee_id
+
+**COUNT Aggregation**
+
+SELECT COUNT(DISTINCT(customer_id)) as rich_count
+FROM store
+WHERE amount > 500
+
+**CALCULATION using ROUND**
+
+SELECT original_title, ROUND(((revenue-budget)/budget) * 100,2)as Profit_percentage 
+FROM movies
+
+**ORDERBY**
+
+SELECT name 
+FROM students
+where marks > 75
+ORDER by name, id
+
+**INITCAP**
+SELECT employee_number, INITCAP(CONCAT(first_name,' ',last_name)) as 'Full Name'
+FROM employees
+ORDER BY employee_number
+
+**SUBSTRING** 
+
+SELECT
+employee_number,
+CONCAT( 
+    UPPER(SUBSTRING(first_name,1,1)),
+    LOWER(SUBSTRING(first_name,2,LENGTH(first_name))), 
+    ' ' , 
+    LOWER(last_name) )
+ AS 'Full Name'
+FROM employees
+ORDER BY 1
+
+2nd method 
+
+
+SELECT employee_number, CONCAT(
+    UPPER(SUBSTRING(first_name, 1, 1)),
+    LOWER(SUBSTRING(first_name, 2)),
+    " ",
+    LOWER(last_name)) as `Full Name`
+FROM employees ORDER BY employee_number ASC
+
+
+#### Day 5 - Join Assignments 
+
+**Max Function** 
+
+SELECT 
+round(max(lat_n),4) as max
+FROM station
+where lat_n < 138.2523
+
+select ROUND(lat_n,4)
+from station
+where lat_n < 138.2523
+order by lat_n desc
+limit 1
+
+**GROUBP BY and HAVING**
+
+SELECT actor_id, director_id
+FROM actordirector
+GROUP BY  actor_id, director_id
+HAVING count(director_id) >= 3
+ORDER BY actor_id
+
+**DENSE_RANK**
+
+SELECT * FROM employees WHERE
+salary = (
+SELECT salary FROM (
+SELECT salary, DENSE_RANK() OVER( order by salary DESC) SALrank FROM employees
+GROUP BY salary) tab
+WHERE SALrank = 3);
+
+
+SELECT * FROM employees
+WHERE salary = (
+SELECT max(salary) FROM employees
+WHERE salary < (
+SELECT max(salary) FROM employees
+WHERE salary < (
+SELECT max(salary) FROM employees
+)
+)
+)
+
+-- Using limit and offset
+-- SELECT * FROM employees
+-- WHERE salary = (
+-- SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 2
+-- )
+
+---
+Doubt Sesssion 
+
+SELECT DISTINCT customer_zip 
+FROM `sathish-scaler-projects.farmers_market.customer`
+WHERE customer_id in (select customer_id FROM `sathish-scaler-projects.farmers_market.customer_purchases` WHERE market_date = '2019-04-06')
+
+--
+**INNER JOIN**
+
+SELECT concat(man.first_name," ",man.last_name) as full_name
+from employees man
+where man.employee_id in (
+SELECT manager_id
+from employees emp
+group by emp.manager_id
+having count(emp.employee_id) >=4
+)
+order by full_name
+
+Without subquery
+
+SELECT concat(man.first_name," ",man.last_name) as full_name
+from employees man
+join employees emp
+on man.employee_id = emp.manager_id
+group by full_name
+having count(*)>=4
+order by full_name
+
+
+**JOIN**
+
+SELECT dept.* from departments dept 
+join employees emp 
+on dept.department_id = emp.department_id
+group by dept.department_id, dept.department_name, dept.manager_id, dept.location_id
+having min(emp.salary) >= 9000
+ORDER by department_id
+
+**JOIN**
+
+select p.product_name, s.year, s.price 
+from sales s 
+join product p  
+on p.product_id = s.product_id
+where s.product_id is not NULL
+order by year, product_name asc;
+
+**left join** 
+
+
+select d.department_id, d.department_name 
+from departments d
+left join employees e 
+on d.department_id = e.department_id
+where e.department_id is null
+order by department_id asc;
+
+**Self join**
+
+SELECT  c1.candidate_id
+FROM candidates c1
+join candidates c2
+on c1.candidate_id=c2.candidate_id and c1.skill!=c2.skill
+join candidates c3
+on c2.candidate_id=c3.candidate_id and c2.skill!=c3.skill and c1.skill!=c3.skill
+where c1.skill="Python" and c2.skill="MySQL" and c3.skill="Tableau"
+order by c1.candidate_id;
+
+**AGGREGATE FUNCTIONS - SUM, AVG**
+
+SELECT 
+    query_name,
+    ROUND(SUM(rating/position)/COUNT(*) ,2) AS quality,
+    ROUND(AVG(rating<3) * 100 , 2) AS poor_query_percentage
+FROM queries 
+GROUP BY query_name
+ORDER BY query_name asc;
+
+**CASE STATEMENT with Aggregation** 
+
+SELECT 
+department_id AS Department, 
+Count(employee_id) AS No_of_employees,
+CASE 
+    WHEN COUNT(employee_id) = 1 then 'Junior Department'
+    WHEN COUNT(employee_id)  between 2 and 4 then 'Intermediate Department'
+    WHEN COUNT(employee_id) > 4 then 'Senior Department'
+END  AS Department_level
+FROM employees
+GROUP BY department_id
+ORDER BY No_of_employees, Department asc
+
+**JOINS with Where**
+
+SELECT DISTINCT(c.title)
+FROM Content c 
+JOIN TVProgram t ON 
+    t.content_id = c.content_id
+WHERE 
+    c.Kids_content = 'Y' AND 
+    c.content_type= 'Movies' AND 
+    t.program_date LIKE '2020-06%'
+ORDER by title asc;
+
+
+**
+
+SELECT s.buyer_id 
+FROM Sales s 
+JOIN Product p ON
+    s.product_id = p.product_id
+WHERE 
+    p.product_name = 'S8' 
+    AND
+    NOT EXISTS 
+        (
+        SELECT 1 
+        FROM Sales s2 
+        JOIN Product P2 ON
+        s2.product_id = p2.product_id
+        WHERE 
+            p2.product_name = 'iPhone' AND
+            s2.buyer_id = s.buyer_id
+        )
+ORDER BY buyer_id asc;
+
+
+SELECT DISTINCT s.buyer_id
+from Sales as s 
+LEFT JOIN Product as p 
+    ON s.product_id=p.product_id
+where 
+    p.product_name='S8' and 
+    s.buyer_id not in 
+    (
+        select s.buyer_id from Sales as s 
+        LEFT JOIN Product as p ON 
+        s.product_id=p.product_id
+    where p.product_name='iPhone'
+    )
+order by s.buyer_id
+
+
+SELECT 
+    e.name,
+    b.bonus
+FROM employee e
+LEFT JOIN 
+    bonus b on
+    e.empID = b.empID
+WHERE 
+    b.bonus < 1000 OR
+    b.bonus is NULL
+ORDER BY
+    b.bonus asc;
+
+
+SELECT 
+    employeeNumber,
+    firstName,
+    lastName
+FROM employees
+WHERE employeeNumber NOT IN (
+    SELECT DISTINCT salesRepEmployeeNumber 
+    FROM customers
+    WHERE salesRepEmployeeNumber IS NOT NULL
+)
+ORDER BY employeeNumber;
+
+**RIGHT JOIN**
+
+SELECT 
+    e.employee_id, 
+    e.first_name, 
+    e.last_name,
+    e.department_id,
+    d.department_name
+FROM employees e 
+RIGHT JOIN departments d on
+    d.department_id = e.department_id
+ORDER BY e.employee_id, d.department_id, e.first_name asc;
+
+
+SELECT 
+    e.employee_id employee_id,
+    e.first_name first_name,
+    e.last_name last_name,
+    d.department_id department_id,
+    d.department_name department_name
+FROM employees e
+RIGHT JOIN departments d
+ON d.department_id = e.department_id
+ORDER BY employee_id, department_id, first_name
+
+**JOIN**
+
+SELECT c.name 
+FROM city c 
+join country c1 
+ON  c.countrycode = c1.code 
+WHERE c1.continent ='Africa'
+ORDER BY c.name asc;
+
+
+
+SELECT 
+p.productCode,
+p.productName,
+pl.textDescription
+FROM products p 
+JOIN productlines pl
+ON p.productLine = pl.productLine
+
+ORDER BY p.productCode asc;
+
+
+SELECT p.session_id
+FROM Playback p 
+LEFT JOIN Ads A
+ON  p.customer_id = A.customer_id AND 
+    A.timestamp BETWEEN p.start_time and p.end_time
+WHERE
+  A.ad_id IS NULL 
+ORDER BY p.session_id
