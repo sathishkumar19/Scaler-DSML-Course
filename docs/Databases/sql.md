@@ -647,3 +647,213 @@ ON  p.customer_id = A.customer_id AND
 WHERE
   A.ad_id IS NULL 
 ORDER BY p.session_id
+
+
+SELECT e1.symbol as metal, e2.symbol as nonmetal
+FROM elements e1, elements e2
+WHERE e1.type = 'Metal' AND e2.type = 'Nonmetal'
+ORDER BY metal, nonmetal;
+
+
+SELECT 
+    e.employee_id,
+    d.department_name,
+    j.job_id,
+    j.job_title,
+    j.min_salary
+FROM employees e
+JOIN departments d 
+    ON e.department_id = d.department_id
+JOIN job_history jh 
+    ON e.employee_id = jh.employee_id
+JOIN jobs j 
+    ON j.job_id = jh.job_id
+    WHERE j.job_title LIKE '%sales%'  AND j.min_salary >= 6000
+ORDER BY e.employee_id, j.min_salary asc;
+
+
+SELECT 
+    DISTINCT e.employee_id, 
+    CONCAT(e.first_name, ' ', e.last_name) full_name,
+    e.salary,
+    e.phone_number, 
+    e.department_id, 
+    d.department_name,
+    l.street_address, 
+    l.city, 
+    c.country_name, 
+    c.region_id, 
+    r.region_name
+FROM employees e 
+JOIN departments d
+ON e.department_id = d.department_id
+JOIN locations l
+ON d.location_id = l.location_id
+JOIN countries c
+ON c.country_id = l.country_id
+JOIN regions r
+ON r.region_id = c.region_id
+WHERE r.region_name = 'Europe'
+ORDER by e.salary desc , e.employee_id asc;
+
+- Q3 
+
+**NOT EXISTS **  this didnt work 
+SELECT
+    e1.employee_id
+
+FROM employees e1 
+WHERE   
+    NOT EXISTS (SELECT 1 from employees WHERE  e1.manager_id = employee_id ) AND
+    e1.salary < 15000
+
+ORDER BY e1.employee_id asc;
+
+** LEFT JOIN WORKED **
+
+SELECT
+    e1.employee_id
+
+FROM employees e1 
+LEFT JOIN employees e2
+    ON e1.manager_id = e2.employee_id
+WHERE
+    e2.employee_id is NULL AND
+    e1.manager_id is NOT NULL AND
+    e1.salary < 15000
+
+ORDER BY e1.employee_id asc;
+
+- Q5
+**LEFT JOIN with SUBQUERY**
+
+
+SELECT 
+    CONCAT(e1.first_name,' ',e1.last_name) full_name
+FROM 
+    employees e1
+LEFT JOIN
+    (
+        SELECT department_id, SUM(salary) as dept_total 
+        FROM employees
+        GROUP BY department_id
+    )  as dept_filter
+ON e1.department_id = dept_filter.department_id
+
+WHERE 
+    e1.salary > 0.4 * dept_filter.dept_total OR
+    e1.department_id IS NULL
+ORDER BY
+    full_name asc; 
+
+- Q4 
+
+**COLASCE**
+
+SELECT 
+    d.department_name,
+    COALESCE(COUNT(e.employee_id), 0) as No_of_Employees,
+    SUM(e.salary) as Total_Salary
+FROM departments d
+LEFT JOIN employees e ON d.department_id = e.department_id
+GROUP BY d.department_name
+ORDER BY d.department_name;
+
+- Q6
+
+**CROSS JOIN**
+
+SELECT 
+    MIN(round(sqrt(power((p1.x - p2.x),2) + power((p1.y- p2.y),2)),2)) as shortest
+FROM points p1 
+CROSS JOIN points p2
+WHERE 
+  NOT (p1.x = p2.x AND p1.y = p2.y)
+
+
+**SELF JOIN**
+
+
+SELECT DISTINCT l1.account_id
+FROM loginfo l1
+JOIN loginfo l2
+on l1.account_id = l2.account_id 
+WHERE 
+    l1.ip_address != l2.ip_address and 
+    l1.login <= l2.logout AND 
+    l2.login <= l1.logout
+ORDER BY l1.account_id asc
+
+Q1 - Additional 
+
+--Without Joins
+select name
+from salesperson
+where sales_id not in
+    (select sales_id
+    from orders
+    where com_id =
+        (select com_id
+        from company
+        where name = 'RED'))
+order by name;
+
+
+
+--Using Left Join
+select S.name
+from salesperson as S
+left join
+(select *
+from orders
+where com_id = (
+    select com_id
+    from company
+    where name = 'RED'
+))R
+on S.sales_id = R.sales_id
+where R.order_id is NULL
+order by S.name;
+
+
+q2.Additional 
+
+SELECT 
+    e1.employee_id,
+    e1.first_name,
+    e1.last_name
+FROM 
+    employees e1
+LEFT JOIN employees e2
+ON e1.manager_id=e2.employee_id
+WHERE 
+    e1.manager_id is NOT NULL and
+    e1.hire_date < e2.hire_date
+
+ORDER BY e1.employee_id asc; 
+
+
+Q3. 
+**WHERE CONDITIONS**
+
+
+SELECT 
+    DISTINCT c.customer_id,
+    c.customer_name
+FROM
+    customers c
+JOIN orders o 
+ON c.customer_id = o.customer_id
+WHERE c.customer_id IN (
+    SELECT customer_id 
+    FROM orders 
+    WHERE product_name IN ('Bread', 'Milk')
+    GROUP BY customer_id
+    HAVING COUNT(DISTINCT product_name) = 2
+)
+AND c.customer_id NOT IN (
+    SELECT customer_id 
+    FROM orders 
+    WHERE product_name = 'Eggs'
+)
+ORDER BY  c.customer_name asc; 
