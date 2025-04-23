@@ -93,3 +93,5 @@ ORDER BY film_id
 -- Question 13: List all the customers who have never rented a film.
 
 -- Question 14: Find the total number of rentals for each store.
+
+-- Question 15: List all the films that have a replacement cost higher than the average replacement cost.
