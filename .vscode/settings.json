@@ -1,4 +1,13 @@
 {
-    "sqltools.connections": [],
+    "sqltools.connections": [
+        {
+            "name": "BigQuery",
+            "authenticator": "CLI",
+            "location": "us",
+            "previewLimit": 50,
+            "driver": "BigQuery",
+            "projectId": "sathish-scaler-projects"
+        }
+    ],
     "sqltools.useNodeRuntime": true
 }

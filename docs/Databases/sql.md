@@ -1271,3 +1271,5 @@ from
 ) tbl2
 where people9 is not null
 order by visit_date
+
+
