@@ -799,8 +799,8 @@ where sales_id not in
 order by name;
 
 
-
 --Using Left Join
+
 select S.name
 from salesperson as S
 left join
@@ -857,3 +857,417 @@ AND c.customer_id NOT IN (
     WHERE product_name = 'Eggs'
 )
 ORDER BY  c.customer_name asc; 
+
+*** Day 9 Assignments
+
+**SELF JOIN/INNER JOIN**
+
+SELECT  f1.follower, 
+        count(distinct f2.follower) as num 
+FROM follow f1 
+INNER JOIN follow f2
+ON f1.follower = f2.followee 
+group by f1.follower 
+order by f1.follower;
+
+
+**WINDOW Functions RANK DENSE RANK and ROW Number**
+
+Q2.
+SELECT 
+    CONCAT(e1.first_name,' ',e1.last_name) as full_name,
+    e1.department_id,
+    e1.salary,
+    row_number() over (partition by department_id order by e1.salary desc) as emp_row_no,
+    rank() over (partition by department_id order by e1.salary desc) as emp_rank,
+    dense_rank() over (partition by department_id order by e1.salary desc) as emp_dense_rank
+
+FROM employees e1
+ORDER BY e1.department_id ASC, e1.salary DESC;
+
+Q4.
+
+
+WITH RankedEmployees as 
+(
+    SELECT 
+        employee_id,
+        first_name,
+        job_id,
+        dense_rank() over (partition by job_id ORDER by salary desc) as emp_sal_rank
+    FROM employees 
+)
+SELECT 
+    employee_id,
+    first_name,
+    job_id
+FROM RankedEmployees
+Where emp_sal_rank = 5
+ORDER by employee_id;
+
+
+another approach 
+
+SELECT
+    employee_id,
+    first_name,
+    job_id
+FROM
+    (select
+        employee_id,
+        first_name,
+        job_id,
+        dense_rank() over(partition by job_id order by salary desc) as salary_rank
+    from employees) tab1
+    where salary_rank = 5
+    order by employee_id
+
+Q1. Teams
+
+SELECT 
+    t1.team_name as home_team,
+    t2.team_name as away_team
+FROM teams t1
+CROSS JOIN teams t2
+WHERE t1.team_name != t2.team_name
+ORDER BY home_team, away_team;
+
+
+Q3. 
+**ROW_NUMBER**
+
+select window_table.first_col, window_table1.second_col
+from(
+    select first_col,
+    row_number() over(order by first_col) as first_coulmn
+    from data
+    order by first_coulmn
+) as window_table
+join
+(
+    select second_col,
+    row_number() over(order by second_col desc) as second_coulmn
+    from data
+    order by second_coulmn
+) as window_table1
+on window_table.first_coulmn = window_table1.second_coulmn;
+
+Another approach 
+
+
+
+
+select first_col,second_col
+from
+(
+    select first_col,
+    row_number() over ( order by first_col asc ) as A
+    from data
+) as FC
+inner join (
+    select second_col,
+     row_number() over ( order by second_col desc ) as B
+from data
+ ) as SC
+on FC.A =SC.B
+
+**Simple Dense Rank**
+
+SELECT 
+    score,
+    dense_rank() over (order by score desc) as 'rank'
+FROM scores
+order by score desc
+
+**Window Function with CASE Statement**
+
+WITH Calculcated_Salaries as
+( 
+   SELECT 
+    company_id,
+    employee_id,
+    employee_name,
+    (
+        CASE
+            WHEN MAX(salary) OVER (PARTITION BY company_id) < 1000 THEN ROUND(salary * 1)
+            WHEN MAX(salary) OVER (PARTITION BY company_id) BETWEEN 1000 AND 10000 THEN ROUND(salary * 0.76)
+            ELSE ROUND(salary * 0.51)
+        END
+    ) as salary 
+    FROM salaries
+)
+SELECT
+    company_id,
+    employee_id,
+    employee_name,
+    salary
+FROM Calculcated_Salaries
+ORDER BY company_id, employee_id ASC;
+
+
+**Window Function with AVG**
+
+WITH calculated_table as 
+    (
+        SELECT   
+        employee_id,
+        first_name,
+        last_name,
+        department_id, 
+        salary,
+        AVG(salary) over (partition by department_id) as avg_dept_salary
+        FROM employees
+    )
+SELECT 
+    employee_id,
+    first_name,
+    last_name,
+    department_id,
+    salary
+FROM calculated_table
+where avg_dept_salary > salary
+
+ORDER BY employee_id asc;
+
+**Salary Count**
+
+WITH salary_counts AS (
+    SELECT 
+        salary
+    FROM employees
+    GROUP BY salary
+    HAVING COUNT(*) >= 2
+)
+SELECT 
+    e.employee_id,
+    e.name,
+    e.salary,
+    dense_rank() over (order by e.salary) as team_id
+FROM employees e
+JOIN salary_counts sc ON e.salary = sc.salary
+ORDER BY employee_id
+
+
+**ROW_Number Ranking**
+
+WITH RankedOrders AS 
+(
+    SELECT 
+        c.name as customer_name,
+        c.customer_id,
+        o.order_id,
+        o.order_date,
+        row_number() over (partition by c.customer_id order by o.order_date desc) as rn
+    FROM orders o
+    JOIN customers c 
+    ON c.customer_id = o.customer_id
+)
+SELECT 
+    customer_name,
+    customer_id,
+    order_id,
+    order_date
+
+FROM RankedOrders 
+Where rn <= 3 
+
+ORDER BY customer_name asc, customer_id asc, order_date desc
+
+### Day 10 Assignments
+
+Q1.
+**Window Function **
+
+SELECT 
+    t.account_id,
+    t.day,
+    SUM(
+        CASE 
+        WHEN type = 'Deposit' THEN amount 
+        ELSE -amount 
+        END 
+        ) 
+        OVER (PARTITION BY account_id ORDER BY day) as balance
+FROM transactions t
+ORDER BY t.account_id, t.day; 
+
+**Window Function**
+
+SELECT
+    distinct first_name,
+    first_value(start_date) OVER (PARTITION BY first_name ORDER BY start_date ASC) AS first_day_job
+FROM (
+    SELECT
+        e.first_name,
+        jb.start_date
+    FROM
+        employees AS e
+        JOIN job_history AS jb ON e.employee_id = jb.employee_id
+    ) t
+ORDER BY first_name;
+
+WITH tempTable AS
+(
+    SELECT
+        e.first_name,
+        jb.start_date
+    FROM
+        employees AS e
+        JOIN job_history AS jb ON e.employee_id = jb.employee_id
+)
+SELECT
+    distinct first_name,
+    first_value(start_date) OVER (PARTITION BY first_name ORDER BY start_date ASC) AS first_day_job
+FROM tempTable
+ORDER BY first_name;
+
+**Q2 - Window Functions**
+
+SELECT 
+    player_id,
+    event_date,
+    sum(games_played) over (partition by player_id order by event_date asc ) as games_played_so_far
+
+FROM activity
+ORDER BY player_id, games_played_so_far asc;
+
+**Q3 - Window Functions**
+
+With temptable as
+(
+SELECT 
+    employee_id,
+    salary,
+    lead(salary) over (order by salary) as next_higher_salary
+FROM employees
+)
+SELECT 
+        employee_id,
+        salary,
+        next_higher_salary,
+        next_higher_salary - salary as salary_difference
+FROM temptable
+
+order by salary, salary_difference
+
+**Q4.NTH VALUE**
+
+SELECT
+    productLine,
+    productName,
+    MSRP,
+    NTH_VALUE(productName, 3) OVER (PARTITION BY productLine ORDER BY MSRP DESC) AS thirdMostExpensive_Product,
+    NTH_VALUE(productName, 5) OVER (PARTITION BY productLine ORDER BY MSRP DESC) AS fifthMostExpensive_Product
+FROM products
+ORDER BY productLine ASC, MSRP DESC;
+
+
+**Q6.Window Functions**
+
+WITH data AS (
+    SELECT
+        order_id,
+        AVG(quantity) AS avg_quantity,
+        MAX(AVG(quantity)) OVER() AS max_avg_quantity,
+        MAX(quantity) AS max_quantity
+    FROM ordersdetails
+    GROUP BY order_id
+)
+
+SELECT order_id
+FROM data
+WHERE max_quantity > max_avg_quantity
+ORDER BY order_id
+
+**Q8. Window Function**
+
+Without Window 
+
+SELECT 
+    e.first_name,
+    MAX(j.start_date) as recent_job
+FROM employees e 
+JOIN job_history j ON e.employee_id = j.employee_id
+GROUP BY e.first_name
+ORDER BY first_name
+
+with First Value Window function 
+
+SELECT DISTINCT e.first_name,
+    FIRST_VALUE(j.start_date) OVER (
+        PARTITION BY e.employee_id 
+        ORDER BY j.start_date DESC
+    ) as recent_job
+FROM employees e 
+JOIN job_history j ON e.employee_id = j.employee_id
+ORDER BY first_name
+
+**Q7 - NTILE**
+
+select customerName,
+sum(amount) as total_amount,
+ntile(4) over (order by sum(amount) desc) as sales_quartile
+
+from customers c join payments p
+on c.customerNumber =p.customerNumber
+group by c.customerName
+order by total_amount desc,sales_quartile asc
+
+
+
+**NTH-ROW**
+
+
+SELECT
+    o.customerNumber,
+    o.orderNumber,
+    od.productCode,
+    round(od.quantityOrdered*od.priceEach,2) AS sales,
+    NTH_VALUE(round(od.quantityOrdered * od.priceEach,2), 3) 
+        OVER 
+        (
+            PARTITION BY customerNumber 
+            ORDER BY od.quantityOrdered*od.priceEach DESC 
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+        ) AS thirdHighestSales
+FROM orders as o
+JOIN orderdetails as od
+ON o.orderNumber = od.orderNumber
+ORDER BY customerNumber ASC, sales DESC;
+
+**FIRST_VALUE and DISTINCT**
+
+SELECT DISTINCT
+    e.first_name,
+    e.last_name,
+    FIRST_VALUE(j.max_salary) OVER (partition by jh.employee_id order by jh.start_date) as first_job_sal
+FROM employees e
+JOIN job_history jh 
+ON e.employee_id = jh.employee_id
+JOIN jobs j
+ON j.job_id = jh.job_id
+
+ORDER  BY e.first_name;
+
+**LEAD LAG**
+
+
+select id, visit_date, people9 as people
+from
+(
+    select *,
+        case when (people >= 100 AND people_1 >= 100 AND people_2 >= 100) OR
+        (people >= 100 AND people_1 >= 100 AND people1 >= 100) OR
+        (people >= 100 AND people1 >= 100 AND people2 >= 100)  
+        then people
+        end as people9
+    from(SELECT *,
+        lead(people,2) over(order by visit_date) people2,
+        lead(people,1) over(order by visit_date) people1,
+        lag(people,1) over(order by visit_date)  people_1,
+        lag(people,2) over(order by visit_date)  people_2
+    from mall
+    ) tbl
+) tbl2
+where people9 is not null
+order by visit_date
