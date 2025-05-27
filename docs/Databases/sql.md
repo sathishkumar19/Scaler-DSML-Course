@@ -1273,3 +1273,771 @@ where people9 is not null
 order by visit_date
 
 
+#### Day 11- CaseStudy2
+
+SELECT employee_id,
+department_id,
+hire_date,
+salary,
+FIRST_VALUE(salary)
+    OVER (PARTITION BY department_id ORDER BY hire_date)
+    AS first_dep_salary,
+FIRST_VALUE(salary)
+    OVER (PARTITION BY department_id ORDER BY hire_date DESC)
+    AS latest_dep_salary,
+LAST_VALUE(salary)
+    OVER (PARTITION BY department_id ORDER BY hire_date ROWS
+    BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+    AS last_dep_salary
+FROM employees
+ORDER BY department_id
+
+
+#### Day 15 - Date and Time Functions 
+
+**Q1 - DateDiff**
+
+SELECT 
+   employee_id, 
+   first_name, 
+   last_name,
+   ROUND(DateDiff("2022-06-08", hire_date) / 365,2)as Total_years
+FROM employees
+Having Total_years >= 28
+ORDER BY employee_id asc;
+
+**Q2 - EXTRACT**
+
+SELECT 
+    employee_id, 
+    first_name, 
+    last_name, 
+    salary, 
+    hire_date,
+    EXTRACT(DAY from hire_date) as Day,
+    EXTRACT(MONTH from hire_date) as Month,
+    EXTRACT(YEAR from hire_date) as Year
+FROM employees
+WHERE salary >= 5000 AND hire_date  BETWEEN '2000-01-01' AND '2000-01-31'
+ORDER BY employee_id asc;
+
+Another approach
+
+select 
+    employee_id,
+    first_name,
+    last_name,
+    salary,
+    hire_date,
+    EXTRACT(DAY FROM hire_date) as Day,
+    extract(month from hire_date) as Month,
+    extract(year from hire_Date) as Year
+from employees
+where 
+    extract(year from hire_Date) ='2000'
+    and extract(month from hire_Date)='1'
+    and salary >5000
+order by employee_id;
+
+Q4 **DateADD**
+
+SELECT
+    e.employee_id, 
+    e.first_name, 
+    e.last_name, 
+    e.salary, 
+    d.department_name, 
+    e.hire_date,
+    l.city
+FROM employees e 
+JOIN departments d 
+ON e.department_id = d.department_id
+JOIN locations l 
+ON d.location_id = l.location_id
+WHERE 
+    hire_date >= '1998-01-01' AND
+    hire_date <= DATE_ADD('1998-01-01', INTERVAL 90 DAY) 
+
+ORDER BY employee_id asc;
+
+
+Q7 **DateDiff**
+
+SELECT
+    e.employee_id, 
+    e.first_name, 
+    e.last_name, 
+    e.salary, 
+    d.department_name,  
+    ROUND(DATEDIFF('2022-06-08',hire_date) / 365, 4) as Experience
+FROM employees e
+JOIN departments d 
+ON e.department_id = d.department_id
+WHERE (DATEDIFF("2022-06-08",hire_date)/365) > 25 AND employee_id in (SELECT manager_id FROM employees)
+ORDER BY employee_id
+
+Another approach
+
+
+**Q6 - DATE DIFF**
+
+SELECT 
+    user_id, 
+    sum(number_of_comments) as comments_count
+FROM fb_comments
+where 
+    datediff("2020-02-10",created_at) <= 30 AND 
+    datediff("2020-02-10",created_at) >= 0
+group by user_id
+ORDER BY user_id
+
+Another Approach 
+
+SELECT 
+    user_id, 
+    SUM(number_of_comments) As comments_count
+FROM fb_comments
+WHERE created_at BETWEEN DATE_SUB("2020-02-10",INTERVAL 30 day) AND "2020-02-10"
+GROUP BY user_id
+ORDER BY user_id
+
+
+**Q8; MAX Salary**
+
+WITH data AS (
+    SELECT
+        *,
+        MAX(salary) OVER(PARTITION BY department_id) AS max_salary
+    FROM employees
+    WHERE hire_date BETWEEN "1997-07-01" AND "1998-01-01"    
+)
+
+SELECT
+    employee_id,
+    first_name,
+    last_name,
+    salary,
+    hire_date,
+    department_id
+FROM data
+WHERE salary = max_salary
+ORDER BY department_id, employee_id
+
+
+
+
+S5 - Day 15
+SELECT 
+    lower(trim(product_name)) as product_name, 
+    DATE_FORMAT(sale_date, '%Y-%m') as sale_date, 
+    count(product_name) as total
+FROM sales
+group by lower(trim(product_name)),DATE_FORMAT(sale_date, '%Y-%m')
+order by product_name,sale_date
+
+Day - 15 
+
+SELECT
+    YEAR(hire_date)AS 'Year',
+    COUNT(employee_id) AS 'Employees_count'
+FROM employees
+GROUP BY Year
+ORDER BY Employees_count DESC, Year ASC;
+
+Day 15 - A - Q2
+
+**TIMEDIFF & CIEL & COALSCE**
+
+WITH selectemployees as
+(
+   SELECT 
+      e.employee_id,
+      needed_hours
+   FROM employees e 
+   LEFT JOIN logs l 
+   USING (employee_id)
+   GROUP BY e.employee_id, needed_hours
+   HAVING COALESCE(SUM(CEIL(TIMESTAMPDIFF(MINUTE,l.in_time,l.out_time))),0) < needed_hours * 60
+)
+SELECT 
+   employee_id
+FROM selectemployees
+ORDER BY employee_id;
+
+
+
+DAY 16 - CTE's
+
+**CTE**
+Q1.
+
+WITH selectemployees as
+(
+    SELECT 
+        employee_id, 
+        first_name, 
+        last_name, 
+        salary,  
+        salary + salary * COALESCE(commission_pct, 0) as Net_Salary
+    FROM employees 
+)
+SELECT
+    employee_id, 
+    first_name, 
+    last_name, 
+    salary,  
+    Net_Salary
+FROM selectemployees
+WHERE Net_Salary > 15000
+ORDER BY employee_id; 
+
+
+
+Day 16- CTE 
+
+Q2 **CTE**
+        WITH seniors AS (
+            SELECT *,
+            SUM(salary) OVER (PARTITION BY experience ORDER BY salary) as running_total
+            FROM candidates
+            WHERE experience = 'Senior'
+        ),
+        hired_seniors AS (
+            SELECT * 
+            FROM seniors 
+            WHERE running_total <= 70000
+        ),
+        remaining_budget AS (
+            SELECT 
+                70000 - SUM(salary) as budget 
+            FROM hired_seniors
+        ),
+        hired_juniors AS (
+            SELECT *,
+            SUM(salary) OVER (PARTITION BY experience ORDER BY salary) as running_total
+            FROM candidates 
+            WHERE experience = 'Junior'
+        )
+        SELECT employee_id FROM hired_seniors
+        UNION ALL
+        SELECT employee_id FROM hired_juniors 
+        WHERE running_total <= (SELECT budget FROM remaining_budget)
+        ORDER BY employee_id
+
+Day 16 - 
+
+**Q3 UNION ALL**
+
+
+SELECT 
+   employee_id
+   FROM salaries 
+   RIGHT JOIN employees 
+   USING (employee_id)
+   WHERE salary IS NULL
+UNION ALL 
+SELECT 
+   employee_id
+   FROM employees 
+   RIGHT JOIN salaries 
+   USING (employee_id)
+   WHERE name IS NULL 
+   ORDER BY employee_id
+
+Day 16 - Q6 **Views**
+
+
+CREATE view  Manager_details as
+select distinct e1.employee_id, concat(e1.first_name, ' ', e1.last_name) as Manager, e1.salary, d.department_name, l.city, c.country_name
+from employees e join employees e1
+on e.manager_id = e1.employee_id
+join departments d
+on e1.department_id = d.department_id
+join locations l
+on d.location_id = l.location_id
+join countries c
+on l.country_id = c.country_id;
+
+with cte as
+(
+select *, dense_rank() over (order by salary desc) as rnk from Manager_details
+)
+select employee_id, Manager, salary, department_name,city, country_name from cte where rnk<=5;
+
+
+Day 16 - Q4
+
+
+
+SELECT 
+    product_id,
+    'store1' as store,
+    store1 as price   
+FROM Products
+Where store1 IS not null 
+UNION 
+SELECT 
+    product_id,
+    'store2' as store,
+    store2 as price   
+FROM Products
+WHERE store2 IS not null 
+UNION 
+SELECT 
+    product_id,
+    'store3' as store,
+    store3 as price   
+FROM Products
+Where store3 IS not null 
+order by product_id,store;
+
+Day 16 - Q5
+
+**CTE,SUBQUERY,UNION**
+
+WITH ct AS
+(
+    SELECT s1.user_id , s1.spend_date ,
+    SUM(s1.amount)  total_amount ,
+    COUNT( DISTINCT s1.user_id)  total_users , 
+    CASE WHEN Count(s1.platform) OVER(partition by s1.user_id , s1.spend_date )= 2 Then "both" else s1.platform end "platform"
+    FROM Spending s1
+    GROUP BY s1.user_id , s1.spend_date ,s1.platform
+    ORDER by  s1.user_id , s1.spend_date
+)
+SELECT ans.* FROM (
+SELECT  spend_date ,platform  , SUM(total_amount) total_amount, Count(DISTINCT user_id) total_users
+FROM ct  
+GROUP BY spend_date ,platform
+UNION
+SELECT  c1.spend_date ,"both",0,0 FROM ct c1 WHERE "both" not in (SELECT platform FROM ct  c2 WHERE c1.spend_date =c2.spend_date )
+UNION
+SELECT  c1.spend_date ,"mobile",0,0 FROM ct c1 WHERE "mobile" not in (SELECT platform FROM ct  c2 WHERE c1.spend_date =c2.spend_date )
+UNION
+SELECT  c1.spend_date ,"desktop",0,0 FROM ct c1 WHERE "desktop" not in (SELECT platform FROM ct  c2 WHERE c1.spend_date =c2.spend_date )
+) ans
+ORDER BY ans.spend_date , ans.platform
+
+Day 16 -Q7 
+
+**NTILE**
+
+
+WITH avg_calc_cte as 
+(
+    SELECT 
+        d.department_name,
+        AVG(e.salary) as avg_salary
+    FROM employees e
+    JOIN departments d 
+    USING (department_id)
+    GROUP BY d.department_name
+)
+SELECT 
+    *, 
+    NTILE(10) OVER (ORDER BY avg_salary DESC) as salary_decile
+FROM avg_calc_cte
+ORDER BY avg_salary desc, salary_decile asc
+
+Day 17 - Q1
+
+SELECT C1.user_id
+FROM confirmations  C1 
+JOIN confirmations C2 
+ON C1.user_id = C2.user_id AND 
+C2.time_stamp BETWEEN date_add(C1.time_stamp, interval 1 second) AND 
+date_add(C1.time_stamp,interval 1 day)
+ORDER BY C1.user_id;
+
+*/
+
+select distinct user_id from confirmations c
+where exists (
+select time_stamp from confirmations c1 where
+c.user_id = c1.user_id AND
+c.time_stamp < c1.time_stamp AND
+TIMESTAMPDIFF(SECOND, c.time_stamp, c1.time_stamp) <= 86400
+)
+order by c.user_id;
+
+
+Day 16 - Q2A
+
+**VIEWS**
+
+CREATE VIEW emp_view as 
+   SELECT 
+      e.employee_id, 
+      e.first_name, 
+      e.last_name, 
+      e.salary, 
+      d.department_id,
+      d.department_name, 
+      l.location_id, 
+      l.street_address, 
+      l.city
+   FROM employees e
+   JOIN departments d
+      ON e.department_id = d.department_id
+   JOIN locations l
+      ON d.location_id = l.location_id
+   WHERE l.city = 'Seattle' OR l.city = 'Southlake'
+;
+
+SELECT 
+   employee_id, 
+   first_name, 
+   last_name, 
+   salary, 
+   department_id,
+   department_name, 
+   location_id, 
+   street_address, 
+   city
+FROM emp_view
+ORDER BY employee_id
+
+Day 16 - Q1A
+
+**CTE** Most frequently used product
+
+WITH oc as
+(
+	SELECT 
+		o.customer_id,
+		p.product_id,
+		p.product_name,
+		count(o.order_id) as order_count
+	FROM orders o 
+	INNER JOIN products p 
+		ON p.product_id = o.product_id
+	GROUP BY o.customer_id, p.product_id, p.product_name
+)
+SELECT 
+	customer_id,
+	product_id,
+	product_name
+FROM oc 
+WHERE oc.order_count = ( 
+                        SELECT 
+						MAX(order_count)
+						FROM oc x 
+						WHERE x.customer_id = oc.customer_id 
+                        )
+ORDER BY customer_id,product_id;
+
+
+Day 18 - 
+**Q2 - DATE FORMAT** 
+
+SELECT 
+    DATE_FORMAT(day,"%W, %M %d, %Y") as day
+FROM days
+ORDER BY day 
+
+**Q4 - Regular JOIN**
+
+SELECT 
+    d.dept_name,
+    COUNT(s.student_id) as student_number
+FROM department d
+LEFT JOIN student s 
+ON d.dept_id = s.dept_id
+GROUP BY d.dept_name
+ORDER BY student_number DESC, dept_name
+
+** Day18 **
+**DATEDIFF**
+
+
+WITH emp_less_year AS
+(
+    SELECT 
+        j.employee_id, 
+        (DATEDIFF(j.end_date,j.start_date))/365  AS date_diff,
+        j.job_id, 
+        j1.job_title
+    FROM job_history j
+    JOIN jobs j1 ON j.job_id=j1.job_id
+)
+SELECT 
+    e.employee_id, 
+    concat(e.first_name," ",e.last_name) AS full_name, 
+    l.job_title
+FROM employees e
+JOIN emp_less_year l 
+ON e.employee_id=l.employee_id
+WHERE l.date_diff<1
+ORDER BY employee_id,job_title
+
+
+Q8 - **NTILE Function**
+
+SELECT 
+    employee_id,
+    first_name,
+    department_id,
+    job_id,
+    salary,
+    NTILE(4) OVER (ORDER BY salary) as Quartile
+FROM employees
+ORDER BY Quartile, salary,employee_id
+
+
+**Q7 - DATE ADD**
+
+SELECT 
+    orderNumber, 
+    orderDate,
+    DATE_ADD(orderDate, interval 30 day) as order_date_plus_30_days
+FROM orders 
+ORDER BY orderNumber 
+
+
+Q6 -  **MAX and YEAR**
+
+SELECT 
+    user_id, 
+    MAX(time_stamp) as last_stamp
+FROM logins
+WHERE YEAR(time_stamp) = 2020
+GROUP BY user_id
+ORDER BY user_id
+
+
+Q1-A **COUNT LEFTJOIN GROUPBY**
+
+SELECT 
+    u.user_id as buyer_id,
+    u.join_date,
+    count(o.order_id) as orders_in_2019
+FROM users u 
+LEFT JOIN orders o 
+    ON u.user_id = o.buyer_id 
+    AND YEAR(o.order_date) = 2019
+GROUP BY u.user_id, u.join_date
+ORDER BY buyer_id asc 
+
+
+Q2-A  **MIN and GROUPBY**
+
+SELECT min_date AS `login_date`,count(*) AS `user_count`
+FROM(
+SELECT user_id, min(activity_date) AS `min_date` FROM traffic
+WHERE activity = "login"
+GROUP BY user_id) AS `A`
+WHERE
+min_date <="2019-06-30" and min_date >= date_sub("2019-06-30", interval 90 day)
+GROUP BY login_date
+ORDER BY login_date asc;
+
+
+Day 20 - 
+Q1 -- **Regular JOIN**
+
+SELECT
+    DISTINCT d.department_name
+FROM employees e1 
+LEFT JOIN employees e2
+ON e1.manager_id = e2.employee_id
+LEFT JOIN departments d 
+ON e1.department_id = d.department_id
+WHERE e1.salary > e2.salary 
+ORDER BY department_name
+
+Q7 **GROUP_CONCAT COALESCE CONCAT**
+
+SELECT 
+p.post_id, 
+COALESCE(GROUP_CONCAT(DISTINCT k.topic_id ORDER BY k.topic_id), 'Ambiguous!') as topic
+FROM posts p
+LEFT JOIN keywords k
+ON LOWER(p.content) LIKE CONCAT('%', LOWER(k.word), '%')
+GROUP BY post_id
+ORDER BY post_id asc
+
+Q2 **CTE with AVG MAX**
+
+WITH cte1 as 
+(
+SELECT 
+    d.department_id,
+    d.department_name,
+    e.salary > AVG(e.salary) OVER (PARTITION BY d.department_id) AND 
+    e.salary < MAX(e.salary) OVER (PARTITION by d.department_id) as salary_calc
+FROM employees e 
+LEFT JOIN departments d 
+ON e.department_id = d.department_id
+
+
+)
+SELECT 
+    DISTINCT department_id, 
+    department_name
+FROM cte1 
+WHERE salary_calc = true
+ORDER BY department_id
+
+
+**Q4 - SUBQUERY with ALL Condition**
+
+SELECT 
+    orderNumber,
+    productCode
+FROM orderdetails
+WHERE quantityOrdered < ALL (SELECT quantityOrdered FROM orderdetails WHERE orderLineNumber = 4 )
+ORDER BY orderNumber
+
+Q9 **HAVING COUNT**
+
+SELECT
+    employee_id,
+    date,
+    COUNT(*) AS occurrences
+FROM
+    employee_attendance
+GROUP BY
+    employee_id, employee_name, date
+HAVING COUNT(*) > 1
+ORDER BY
+    employee_id ASC,
+    date ASC;
+
+Q5 - **ANY with Correlated SubQuery**
+
+SELECT DISTINCT productCode
+FROM products AS `p1`
+WHERE p1.buyPrice < ANY 
+(
+    SELECT p2.buyPrice
+    FROM products AS `p2`
+    WHERE
+    (
+    p1.productLine = p2.productLine) AND (p1.productCode != p2.productCode)
+    )
+ORDER BY productCode
+
+Q8 - **COALESCE**
+
+
+SELECT 
+    e.employee_id,
+    e.employee_name,
+    e.employee_salary AS current_salary,
+    (e.employee_salary+coalesce(b.incentive_amount,b.special_bonus,e.employee_salary*0.08)) AS updated_salary_with_incentive_amount
+FROM employee e
+LEFT JOIN bonus b
+ON e.employee_id=b.employee_id
+ORDER BY employee_id;
+
+
+Day 20 - Additional Questions 
+
+
+
+
+Day 21 - Table Creation
+
+Q1
+
+CREATE TABLE Employees (
+emp_id INT NOT NULL, 
+first_name VARCHAR(50), 
+last_name VARCHAR(50), 
+department_id INT, 
+hire_date DATE, 
+salary DECIMAL (10,2), 
+PRIMARY KEY (emp_id, hire_date)) 
+PARTITION BY LIST (department_id) 
+(partition p1 VALUES IN (1, 2, 3), 
+partition p2 VALUES IN (4, 5), 
+partition p3 VALUES IN (6, 7, 8), 
+partition p4 VALUES IN (9, 10));
+
+
+Q8 - Stored Procedure 
+
+CREATE PROCEDURE update_product_price (IN product_code VARCHAR(10), IN new_price DECIMAL(10, 2))
+BEGIN
+ UPDATE products
+ SET price = new_price
+ WHERE product_code = product_code;
+END;
+
+Q3A - Funciton Calling
+
+CREATE FUNCTION calculate_sum (num1 INT, num2 INT) RETURNS INT  
+BEGIN  
+    DECLARE result INT;  
+    SET result = num1 + num2;  
+    RETURN result;  
+END;
+
+Day 20  - Q6 
+
+**GROUP_CONCAT**
+
+SELECT d.department_name, GROUP_CONCAT(e.last_name SEPARATOR ', ') AS last_names
+FROM departments d
+INNER JOIN employees e ON d.department_id = e.department_id
+GROUP BY d.department_id
+HAVING COUNT(*) > 1;
+
+Day 22 -- CASE STUDY 4 
+
+SELECT
+    i.store_id,
+    SUM(i.stock_On_Hand) AS total_stock,
+    ROUND(SUM(i.stock_On_Hand * p.Product_Price), 2) AS inventory_cost
+FROM
+    inventory i
+JOIN
+    products p ON i.Product_ID = p.Product_ID
+GROUP BY
+    i.store_id
+ORDER BY
+    inventory_cost DESC;
+---
+Toys DB
+
+-- Question 3:
+-- Determine which products have a presence in every store
+-- and quantify their sales volume.
+-- This helps identify universally popular products and can guide stocking decisions and promotional strategies.
+
+select 
+  s.Product_ID,
+  sum(s.Units) as sales_volume,
+  count(distinct i.Store_ID) as total_stores
+FROM Hamleys_DB.inventory i 
+left join Hamleys_DB.products p 
+on i.Product_ID = p.Product_ID
+left join Hamleys_DB.sales s
+on p.Product_ID = s.Product_ID
+group by s.Product_ID
+Having total_stores = (select count(distinct store_id) from `sathish-scaler-projects.Hamleys_DB.stores`)
+ORDER BY total_stores;
+
+Q4 
+-- Analyze on Hamleys_DB how the retail price of products affects their sales volume and identify which price ranges are associated with the highest sales. This analysis can guide pricing strategies by identifying optimal price points that maximize sales.
+-- ranges: less than 5, 5-10, 11-25, 26-50, 50+
+WITH PriceRanges AS 
+(
+  SELECT
+  CASE
+    WHEN Product_Price < 5 THEN 'Less than 5'
+    WHEN Product_Price BETWEEN 5 AND 10 THEN '5-10'
+    WHEN Product_Price BETWEEN 11 AND 25 THEN '11-25'
+    WHEN Product_Price BETWEEN 26 AND 50 THEN '26-50'
+    ELSE '50+'
+  END
+    AS PriceRange,
+    SUM(Units) AS TotalSales
+  FROM `sathish-scaler-projects`.`Hamleys_DB`.`products` p
+  LEFT JOIN `sathish-scaler-projects`.`Hamleys_DB`.`sales` s
+  ON p.Product_ID = s.Product_ID
+  GROUP BY PriceRange 
+)
+SELECT PriceRange, TotalSales
+FROM `PriceRanges`
+ORDER BY TotalSales DESC;
