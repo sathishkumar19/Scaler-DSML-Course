@@ -106,42 +106,50 @@ LIMIT and/or OFFSET clause
 
 **CONCAT**
 
+``` 
 SELECT 
-    CONCAT('Book Name',':',book_name,',','Author',':',author,',','Book price',':',book_price) as Book_Description 
-    FROM books 
-    ORDER BY book_name
-
+CONCAT('Book Name',':',book_name,',','Author',':',author,',','Book price',':',book_price) as Book_Description 
+FROM books 
+ORDER BY book_name
+```
 **ROUND CALCULATION**
 
+``` 
 SELECT
     emp_id, name, salary, ROUND(salary + (0.2 * salary),0)  as New_salary
     FROM employees
     ORDER BY emp_id
-
+``` 
 **NOT EQUALTO <>**
+``` 
 SELECT 
     *
     FROM job_history
     WHERE employee_id <> 101
     ORDER BY employee_id, job_id
-
+``` 
 
 **OR with Condition**
 
+``` 
 SELECT name, population, area 
     FROM world 
     WHERE area >= 3000000 OR population >= 25000000 
     ORDER BY name ASC
+``` 
 
 **LIKE with %**
 
+``` 
 
 SELECT original_title, director, genres, cast, budget, revenue, runtime, vote_average
     FROM movies 
     WHERE keywords LIKE '%sport%' OR keywords LIKE '%sequel%' OR keywords LIKE '%suspense%'
     ORDER BY original_title ASC
-
+``` 
 **NULL**
+
+``` 
 
 SELECT employee_id, first_name, last_name, salary
 FROM employees
@@ -150,33 +158,43 @@ WHERE commission_pct IS NULL
   AND department_id IN (50, 10, 80)
 ORDER BY employee_id ASC;
 
+``` 
+
 **BETWEEN**
 
+``` 
 SELECT orderNumber,requiredDate 
     FROM orders 
     WHERE orderDate BETWEEN '2003-12-01' AND '2003-12-31'
     AND status = "Shipped"
     ORDER BY orderNumber
 
+``` 
 **AND and Condition**
+
+``` 
 
 SELECT original_title 
     FROM MOVIES 
     WHERE (release_year > 2014 AND vote_average > 7)
     ORDER BY original_title asc;
 
+``` 
 **DISTINCT**
+
+``` 
 
 SELECT DISTINCT author_id as id
     FROM views
     WHERE author_id = viewer_id
     ORDER BY id
 
-
+``` 
 
 
 **CASE**
 
+``` 
 SELECT quantity,
 case
   when quantity > 6 then "bulk purchase"
@@ -186,10 +204,10 @@ end as qty_bucket
 from `sathish-scaler-projects.farmers_market.customer_purchases`
 order by quantity desc
 
-
+``` 
 
 **LIKE**
-
+``` 
 SELECT employee_id, 
         concat (first_name ,' ',last_name) as full_name,
         phone_number 
@@ -197,31 +215,41 @@ SELECT employee_id,
         where first_name like '%n'
         order by employee_id
 
+``` 
 **OFFSET**
 
-SELECT  * from movies order by revenue desc limit 1 OFFSET 2
-
+``` 
+SELECT  * 
+from movies 
+order by revenue desc 
+limit 1 OFFSET 2
+``` 
 
 **NULL**
-
+``` 
 SELECT employee_id, first_name, last_name, job_id, manager_id
 FROM employees
 WHERE department_id is NULL
 ORDER by employee_id
 
+``` 
 **Timestamp and Between**
 
+``` 
 SELECT DISTINCT user_id
 FROM purchases
 WHERE time_stamp  Between '2022-03-08' and  '2022-03-20' and amount >=  1000
 ORDER BY user_id
 
+``` 
 **"=" Condition Operator**
-
-SELECT * FROM city WHERE countrycode = 'JPN'
-
+``` 
+SELECT * 
+FROM city 
+WHERE countrycode = 'JPN'
+``` 
 **LIMIT and OFFSET**
-
+``` 
 SELECT
 employee_number,
 first_name,
@@ -231,41 +259,59 @@ salary
 FROM employees
 ORDER BY salary DESC
 LIMIT 2 OFFSET 3;
-
+``` 
 #### Day 4 Assignments - Subqueries , Grouby and Aggregation 
 
 **ROUND**
 
-SELECT employee_id , round(ifnull(commission_pct,0),2) AS commission_pct
+``` 
+SELECT 
+    employee_id , 
+    round(ifnull(commission_pct,0),2) AS commission_pct
  FROM employees
  ORDER BY employee_id;
-
-**SUBQUERIES**
-
- SELECT employee_id, CONCAT(first_name,' ', last_name) as full_name,salary from
+``` 
+**JOIN**
+``` 
+SELECT 
+employee_id, 
+CONCAT(first_name,' ', last_name) as full_name,salary from
 employees e1 join departments d1
 on e1.department_id=d1.department_id
 and d1.department_name in ( 'Administration', 'Marketing', 'Human Resources');
-
+``` 
 **NOT IN**
+``` 
 SELECT * from employees
 WHERE employee_id not in (select employee_id from job_history)
 ORDER BY employee_id asc 
-
+``` 
 **SUBQUERIES** 
-
-SELECT  CONCAT(first_name,' ', last_name) as full_name, salary, department_id, job_id
+``` 
+SELECT  
+    CONCAT(first_name,' ', last_name) as full_name, 
+    salary, department_id, 
+    job_id
 FROM employees
 WHERE job_id = (SELECT job_id FROM employees WHERE employee_id = 107)
 ORDER BY full_name
-
+``` 
 **SUBQUERIES and CASE Statement**
-SELECT employee_id, first_name, last_name, salary, (CASE WHEN job_id IN ('FI_ACCOUNT', 'AC_ACCOUNT') THEN 1 ELSE 0 END) as Accountant
+``` 
+SELECT 
+    employee_id, 
+    first_name, 
+    last_name, 
+    salary, 
+    (CASE WHEN job_id IN ('FI_ACCOUNT', 'AC_ACCOUNT') THEN 1 ELSE 0 END) as Accountant
 from employees
 ORDER BY employee_id
 
+``` 
+
 **CASE STATEMENT with Operators**
 
+``` 
 SELECT employee_id, salary , 
 (CASE When salary >  20000 THEN 'Class A'
   When salary BETWEEN 10000 AND 20000 THEN 'Class B'
@@ -274,18 +320,19 @@ END
 )AS Salary_bin
 FROM employees
 ORDER BY employee_id
-
+``` 
 **MAX Function**
-
+``` 
 SELECT MAX(num) as num
 FROM
     (SELECT num
     FROM mynumbers
     GROUP BY num
     HAVING COUNT(num) =1) AS t
-
+``` 
 **CASE with Condition**
 
+``` 
 SELECT x, y, z,
     CASE
         WHEN (x + y > z) AND (y + z > x) AND (x + z > y) THEN 'Yes'
@@ -294,61 +341,92 @@ SELECT x, y, z,
 FROM triangle
 ORDER BY x, y, z ASC
 
+``` 
+
+
 **CONDITION ** 
+
+``` 
 
 select round(sum(long_w),4) as sum
 from station
 where long_w between 38.7880 and 137.2345;
+``` 
+
 
 **Condition**
 
+``` 
 SELECT
 earnings, count(*) as num_employees
-FROM(SELECT  (salary*months) AS earnings, employee_id
-FROM employee )temp
+FROM (
+    SELECT  (salary*months) AS earnings, employee_id
+    FROM employee 
+    )temp
 GROUP BY earnings
 HAVING earnings = (SELECT max(salary*months) AS earnings FROM employee)
+``` 
 
 **IFNULL**
 
-SELECT employeeNumber,firstName,lastName,IFNULL(email,'N/A') as email,IFNULL(phone,'N/A') as phone
+``` 
+SELECT 
+    employeeNumber,
+    firstName,
+    lastName,
+    IFNULL(email,'N/A') as email,
+    IFNULL(phone,'N/A') as phone
 FROM employees
 ORDER BY employeeNumber 
 
-**JOIN**
+``` 
 
-SELECT employee_id, first_name, last_name, job_id 
+**JOIN**
+``` 
+SELECT 
+    employee_id, 
+    first_name, 
+    last_name, 
+    job_id 
 FROM employees e 
 JOIN departments d ON e.department_id = d.department_id 
 JOIN locations l ON d.location_id = l.location_id 
 WHERE l.city = 'Seattle' 
 ORDER BY employee_id
-
+``` 
 **COUNT Aggregation**
 
-SELECT COUNT(DISTINCT(customer_id)) as rich_count
+``` 
+SELECT 
+    COUNT(DISTINCT(customer_id)) as rich_count
 FROM store
 WHERE amount > 500
-
+``` 
 **CALCULATION using ROUND**
 
-SELECT original_title, ROUND(((revenue-budget)/budget) * 100,2)as Profit_percentage 
+``` 
+SELECT 
+    original_title, 
+    ROUND(((revenue-budget)/budget) * 100,2)as Profit_percentage 
 FROM movies
-
+``` 
 **ORDERBY**
-
+``` 
 SELECT name 
 FROM students
 where marks > 75
 ORDER by name, id
-
+``` 
 **INITCAP**
-SELECT employee_number, INITCAP(CONCAT(first_name,' ',last_name)) as 'Full Name'
+``` 
+SELECT 
+    employee_number, 
+    INITCAP(CONCAT(first_name,' ',last_name)) as 'Full Name'
 FROM employees
 ORDER BY employee_number
-
+``` 
 **SUBSTRING** 
-
+``` 
 SELECT
 employee_number,
 CONCAT( 
@@ -359,7 +437,7 @@ CONCAT(
  AS 'Full Name'
 FROM employees
 ORDER BY 1
-
+``` 
 2nd method 
 
 
@@ -369,68 +447,87 @@ SELECT employee_number, CONCAT(
     " ",
     LOWER(last_name)) as `Full Name`
 FROM employees ORDER BY employee_number ASC
-
+``` 
 
 #### Day 5 - Join Assignments 
 
 **Max Function** 
 
+``` 
 SELECT 
 round(max(lat_n),4) as max
 FROM station
 where lat_n < 138.2523
-
+``` 
+``` 
 select ROUND(lat_n,4)
 from station
 where lat_n < 138.2523
 order by lat_n desc
 limit 1
-
+``` 
 **GROUBP BY and HAVING**
 
+``` 
 SELECT actor_id, director_id
 FROM actordirector
 GROUP BY  actor_id, director_id
 HAVING count(director_id) >= 3
 ORDER BY actor_id
+``` 
 
 **DENSE_RANK**
 
+``` 
 SELECT * FROM employees WHERE
 salary = (
 SELECT salary FROM (
 SELECT salary, DENSE_RANK() OVER( order by salary DESC) SALrank FROM employees
 GROUP BY salary) tab
 WHERE SALrank = 3);
+``` 
 
-
+**CORELATED SUBQUERY**
+``` 
 SELECT * FROM employees
 WHERE salary = (
-SELECT max(salary) FROM employees
+        SELECT max(salary) FROM employees
 WHERE salary < (
-SELECT max(salary) FROM employees
+        SELECT max(salary) FROM employees
 WHERE salary < (
-SELECT max(salary) FROM employees
-)
-)
+        SELECT max(salary) FROM employees 
+        )
+    )
 )
 
--- Using limit and offset
--- SELECT * FROM employees
--- WHERE salary = (
--- SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 2
--- )
+``` 
+
+**Using limit and offset**
+
+``` 
+SELECT * FROM employees
+WHERE salary = 
+    (
+    SELECT DISTINCT salary 
+    FROM employees 
+    ORDER BY salary DESC 
+    LIMIT 1 OFFSET 2
+    )
+
+```
 
 ---
 Doubt Sesssion 
 
+```
 SELECT DISTINCT customer_zip 
 FROM `sathish-scaler-projects.farmers_market.customer`
 WHERE customer_id in (select customer_id FROM `sathish-scaler-projects.farmers_market.customer_purchases` WHERE market_date = '2019-04-06')
-
+```
 --
 **INNER JOIN**
 
+```
 SELECT concat(man.first_name," ",man.last_name) as full_name
 from employees man
 where man.employee_id in (
@@ -441,8 +538,10 @@ having count(emp.employee_id) >=4
 )
 order by full_name
 
+```
 Without subquery
 
+```
 SELECT concat(man.first_name," ",man.last_name) as full_name
 from employees man
 join employees emp
@@ -450,28 +549,31 @@ on man.employee_id = emp.manager_id
 group by full_name
 having count(*)>=4
 order by full_name
-
+```
 
 **JOIN**
 
+```
 SELECT dept.* from departments dept 
 join employees emp 
 on dept.department_id = emp.department_id
 group by dept.department_id, dept.department_name, dept.manager_id, dept.location_id
 having min(emp.salary) >= 9000
 ORDER by department_id
-
+```
 **JOIN**
 
+```
 select p.product_name, s.year, s.price 
 from sales s 
 join product p  
 on p.product_id = s.product_id
 where s.product_id is not NULL
 order by year, product_name asc;
-
+```
 **left join** 
 
+```
 
 select d.department_id, d.department_name 
 from departments d
@@ -480,8 +582,10 @@ on d.department_id = e.department_id
 where e.department_id is null
 order by department_id asc;
 
-**Self join**
+```
+**Self join with ON and Wityout**
 
+```
 SELECT  c1.candidate_id
 FROM candidates c1
 join candidates c2
@@ -490,9 +594,10 @@ join candidates c3
 on c2.candidate_id=c3.candidate_id and c2.skill!=c3.skill and c1.skill!=c3.skill
 where c1.skill="Python" and c2.skill="MySQL" and c3.skill="Tableau"
 order by c1.candidate_id;
-
+```
 **AGGREGATE FUNCTIONS - SUM, AVG**
 
+```
 SELECT 
     query_name,
     ROUND(SUM(rating/position)/COUNT(*) ,2) AS quality,
@@ -500,9 +605,10 @@ SELECT
 FROM queries 
 GROUP BY query_name
 ORDER BY query_name asc;
-
+```
 **CASE STATEMENT with Aggregation** 
 
+```
 SELECT 
 department_id AS Department, 
 Count(employee_id) AS No_of_employees,
@@ -514,9 +620,10 @@ END  AS Department_level
 FROM employees
 GROUP BY department_id
 ORDER BY No_of_employees, Department asc
-
+```
 **JOINS with Where**
 
+```
 SELECT DISTINCT(c.title)
 FROM Content c 
 JOIN TVProgram t ON 
@@ -527,9 +634,9 @@ WHERE
     t.program_date LIKE '2020-06%'
 ORDER by title asc;
 
-
+```
 **
-
+```
 SELECT s.buyer_id 
 FROM Sales s 
 JOIN Product p ON
@@ -548,8 +655,9 @@ WHERE
             s2.buyer_id = s.buyer_id
         )
 ORDER BY buyer_id asc;
+```
 
-
+```
 SELECT DISTINCT s.buyer_id
 from Sales as s 
 LEFT JOIN Product as p 
@@ -564,8 +672,9 @@ where
     where p.product_name='iPhone'
     )
 order by s.buyer_id
+```
 
-
+```
 SELECT 
     e.name,
     b.bonus
@@ -578,8 +687,10 @@ WHERE
     b.bonus is NULL
 ORDER BY
     b.bonus asc;
+```
 
 
+```
 SELECT 
     employeeNumber,
     firstName,
@@ -591,9 +702,11 @@ WHERE employeeNumber NOT IN (
     WHERE salesRepEmployeeNumber IS NOT NULL
 )
 ORDER BY employeeNumber;
+```
 
 **RIGHT JOIN**
 
+```
 SELECT 
     e.employee_id, 
     e.first_name, 
@@ -604,8 +717,9 @@ FROM employees e
 RIGHT JOIN departments d on
     d.department_id = e.department_id
 ORDER BY e.employee_id, d.department_id, e.first_name asc;
-
-
+```
+**RIGHT JOIN**
+```
 SELECT 
     e.employee_id employee_id,
     e.first_name first_name,
@@ -616,9 +730,10 @@ FROM employees e
 RIGHT JOIN departments d
 ON d.department_id = e.department_id
 ORDER BY employee_id, department_id, first_name
-
+```
 **JOIN**
 
+```
 SELECT c.name 
 FROM city c 
 join country c1 
@@ -626,8 +741,9 @@ ON  c.countrycode = c1.code
 WHERE c1.continent ='Africa'
 ORDER BY c.name asc;
 
+```
 
-
+```
 SELECT 
 p.productCode,
 p.productName,
@@ -635,10 +751,11 @@ pl.textDescription
 FROM products p 
 JOIN productlines pl
 ON p.productLine = pl.productLine
-
 ORDER BY p.productCode asc;
 
+```
 
+```
 SELECT p.session_id
 FROM Playback p 
 LEFT JOIN Ads A
@@ -648,13 +765,17 @@ WHERE
   A.ad_id IS NULL 
 ORDER BY p.session_id
 
+```
 
+```
 SELECT e1.symbol as metal, e2.symbol as nonmetal
 FROM elements e1, elements e2
 WHERE e1.type = 'Metal' AND e2.type = 'Nonmetal'
 ORDER BY metal, nonmetal;
+```
 
 
+```
 SELECT 
     e.employee_id,
     d.department_name,
@@ -670,8 +791,9 @@ JOIN jobs j
     ON j.job_id = jh.job_id
     WHERE j.job_title LIKE '%sales%'  AND j.min_salary >= 6000
 ORDER BY e.employee_id, j.min_salary asc;
+```
 
-
+```
 SELECT 
     DISTINCT e.employee_id, 
     CONCAT(e.first_name, ' ', e.last_name) full_name,
@@ -696,9 +818,12 @@ ON r.region_id = c.region_id
 WHERE r.region_name = 'Europe'
 ORDER by e.salary desc , e.employee_id asc;
 
+```
+
 - Q3 
 
 **NOT EXISTS **  this didnt work 
+```
 SELECT
     e1.employee_id
 
@@ -708,9 +833,11 @@ WHERE
     e1.salary < 15000
 
 ORDER BY e1.employee_id asc;
+```
+
 
 ** LEFT JOIN WORKED **
-
+```
 SELECT
     e1.employee_id
 
@@ -723,11 +850,13 @@ WHERE
     e1.salary < 15000
 
 ORDER BY e1.employee_id asc;
-
+```
 - Q5
+
+
 **LEFT JOIN with SUBQUERY**
 
-
+```
 SELECT 
     CONCAT(e1.first_name,' ',e1.last_name) full_name
 FROM 
@@ -739,17 +868,17 @@ LEFT JOIN
         GROUP BY department_id
     )  as dept_filter
 ON e1.department_id = dept_filter.department_id
-
 WHERE 
     e1.salary > 0.4 * dept_filter.dept_total OR
     e1.department_id IS NULL
 ORDER BY
     full_name asc; 
-
+```
 - Q4 
 
 **COLASCE**
 
+```
 SELECT 
     d.department_name,
     COALESCE(COUNT(e.employee_id), 0) as No_of_Employees,
@@ -758,22 +887,24 @@ FROM departments d
 LEFT JOIN employees e ON d.department_id = e.department_id
 GROUP BY d.department_name
 ORDER BY d.department_name;
+```
 
 - Q6
 
 **CROSS JOIN**
 
+```
 SELECT 
     MIN(round(sqrt(power((p1.x - p2.x),2) + power((p1.y- p2.y),2)),2)) as shortest
 FROM points p1 
 CROSS JOIN points p2
 WHERE 
   NOT (p1.x = p2.x AND p1.y = p2.y)
-
+```
 
 **SELF JOIN**
 
-
+```
 SELECT DISTINCT l1.account_id
 FROM loginfo l1
 JOIN loginfo l2
@@ -784,12 +915,16 @@ WHERE
     l2.login <= l1.logout
 ORDER BY l1.account_id asc
 
+```
+
 Q1 - Additional 
 
 --Without Joins
-select name
-from salesperson
-where sales_id not in
+
+```
+SELECT name
+FROM salesperson
+WHERE sales_id not in
     (select sales_id
     from orders
     where com_id =
@@ -797,10 +932,11 @@ where sales_id not in
         from company
         where name = 'RED'))
 order by name;
-
+```
 
 --Using Left Join
 
+```
 select S.name
 from salesperson as S
 left join
@@ -814,10 +950,11 @@ where com_id = (
 on S.sales_id = R.sales_id
 where R.order_id is NULL
 order by S.name;
-
+```
 
 q2.Additional 
 
+```
 SELECT 
     e1.employee_id,
     e1.first_name,
@@ -831,12 +968,12 @@ WHERE
     e1.hire_date < e2.hire_date
 
 ORDER BY e1.employee_id asc; 
-
+```
 
 Q3. 
 **WHERE CONDITIONS**
 
-
+```
 SELECT 
     DISTINCT c.customer_id,
     c.customer_name
@@ -857,10 +994,14 @@ AND c.customer_id NOT IN (
     WHERE product_name = 'Eggs'
 )
 ORDER BY  c.customer_name asc; 
+```
+
 
 *** Day 9 Assignments
 
 **SELF JOIN/INNER JOIN**
+
+```
 
 SELECT  f1.follower, 
         count(distinct f2.follower) as num 
@@ -869,11 +1010,14 @@ INNER JOIN follow f2
 ON f1.follower = f2.followee 
 group by f1.follower 
 order by f1.follower;
+```
 
 
 **WINDOW Functions RANK DENSE RANK and ROW Number**
 
 Q2.
+
+```
 SELECT 
     CONCAT(e1.first_name,' ',e1.last_name) as full_name,
     e1.department_id,
@@ -884,10 +1028,11 @@ SELECT
 
 FROM employees e1
 ORDER BY e1.department_id ASC, e1.salary DESC;
+```
 
 Q4.
 
-
+```
 WITH RankedEmployees as 
 (
     SELECT 
@@ -905,9 +1050,11 @@ FROM RankedEmployees
 Where emp_sal_rank = 5
 ORDER by employee_id;
 
+```
 
 another approach 
 
+```
 SELECT
     employee_id,
     first_name,
@@ -921,9 +1068,11 @@ FROM
     from employees) tab1
     where salary_rank = 5
     order by employee_id
+```
 
 Q1. Teams
 
+```
 SELECT 
     t1.team_name as home_team,
     t2.team_name as away_team
@@ -931,11 +1080,12 @@ FROM teams t1
 CROSS JOIN teams t2
 WHERE t1.team_name != t2.team_name
 ORDER BY home_team, away_team;
-
+```
 
 Q3. 
 **ROW_NUMBER**
 
+```
 select window_table.first_col, window_table1.second_col
 from(
     select first_col,
@@ -951,12 +1101,13 @@ join
     order by second_coulmn
 ) as window_table1
 on window_table.first_coulmn = window_table1.second_coulmn;
+```
 
 Another approach 
 
 
 
-
+```
 select first_col,second_col
 from
 (
@@ -971,16 +1122,20 @@ from data
  ) as SC
 on FC.A =SC.B
 
-**Simple Dense Rank**
+```
 
+**Simple Dense Rank**
+```
 SELECT 
     score,
     dense_rank() over (order by score desc) as 'rank'
 FROM scores
 order by score desc
 
+```
 **Window Function with CASE Statement**
 
+```
 WITH Calculcated_Salaries as
 ( 
    SELECT 
@@ -1003,10 +1158,10 @@ SELECT
     salary
 FROM Calculcated_Salaries
 ORDER BY company_id, employee_id ASC;
-
+```
 
 **Window Function with AVG**
-
+```
 WITH calculated_table as 
     (
         SELECT   
@@ -1028,9 +1183,9 @@ FROM calculated_table
 where avg_dept_salary > salary
 
 ORDER BY employee_id asc;
-
+```
 **Salary Count**
-
+```
 WITH salary_counts AS (
     SELECT 
         salary
@@ -1046,9 +1201,11 @@ SELECT
 FROM employees e
 JOIN salary_counts sc ON e.salary = sc.salary
 ORDER BY employee_id
-
+```
 
 **ROW_Number Ranking**
+
+```
 
 WITH RankedOrders AS 
 (
@@ -1072,12 +1229,13 @@ FROM RankedOrders
 Where rn <= 3 
 
 ORDER BY customer_name asc, customer_id asc, order_date desc
+```
 
 ### Day 10 Assignments
 
 Q1.
 **Window Function **
-
+```
 SELECT 
     t.account_id,
     t.day,
@@ -1090,9 +1248,9 @@ SELECT
         OVER (PARTITION BY account_id ORDER BY day) as balance
 FROM transactions t
 ORDER BY t.account_id, t.day; 
-
+```
 **Window Function**
-
+```
 SELECT
     distinct first_name,
     first_value(start_date) OVER (PARTITION BY first_name ORDER BY start_date ASC) AS first_day_job
@@ -1105,7 +1263,9 @@ FROM (
         JOIN job_history AS jb ON e.employee_id = jb.employee_id
     ) t
 ORDER BY first_name;
+```
 
+```
 WITH tempTable AS
 (
     SELECT
@@ -1121,7 +1281,10 @@ SELECT
 FROM tempTable
 ORDER BY first_name;
 
+```
 **Q2 - Window Functions**
+
+```
 
 SELECT 
     player_id,
@@ -1130,9 +1293,10 @@ SELECT
 
 FROM activity
 ORDER BY player_id, games_played_so_far asc;
-
+```
 **Q3 - Window Functions**
 
+```
 With temptable as
 (
 SELECT 
@@ -1149,9 +1313,9 @@ SELECT
 FROM temptable
 
 order by salary, salary_difference
-
+```
 **Q4.NTH VALUE**
-
+```
 SELECT
     productLine,
     productName,
@@ -1160,10 +1324,11 @@ SELECT
     NTH_VALUE(productName, 5) OVER (PARTITION BY productLine ORDER BY MSRP DESC) AS fifthMostExpensive_Product
 FROM products
 ORDER BY productLine ASC, MSRP DESC;
-
+```
 
 **Q6.Window Functions**
 
+```
 WITH data AS (
     SELECT
         order_id,
@@ -1178,11 +1343,11 @@ SELECT order_id
 FROM data
 WHERE max_quantity > max_avg_quantity
 ORDER BY order_id
-
+```
 **Q8. Window Function**
 
 Without Window 
-
+```
 SELECT 
     e.first_name,
     MAX(j.start_date) as recent_job
@@ -1190,9 +1355,9 @@ FROM employees e
 JOIN job_history j ON e.employee_id = j.employee_id
 GROUP BY e.first_name
 ORDER BY first_name
-
+```
 with First Value Window function 
-
+```
 SELECT DISTINCT e.first_name,
     FIRST_VALUE(j.start_date) OVER (
         PARTITION BY e.employee_id 
@@ -1201,8 +1366,11 @@ SELECT DISTINCT e.first_name,
 FROM employees e 
 JOIN job_history j ON e.employee_id = j.employee_id
 ORDER BY first_name
+```
 
 **Q7 - NTILE**
+
+```
 
 select customerName,
 sum(amount) as total_amount,
@@ -1213,11 +1381,11 @@ on c.customerNumber =p.customerNumber
 group by c.customerName
 order by total_amount desc,sales_quartile asc
 
-
+```
 
 **NTH-ROW**
 
-
+```
 SELECT
     o.customerNumber,
     o.orderNumber,
@@ -1234,9 +1402,10 @@ FROM orders as o
 JOIN orderdetails as od
 ON o.orderNumber = od.orderNumber
 ORDER BY customerNumber ASC, sales DESC;
-
+```
 **FIRST_VALUE and DISTINCT**
 
+```
 SELECT DISTINCT
     e.first_name,
     e.last_name,
@@ -1248,10 +1417,10 @@ JOIN jobs j
 ON j.job_id = jh.job_id
 
 ORDER  BY e.first_name;
-
+```
 **LEAD LAG**
 
-
+```
 select id, visit_date, people9 as people
 from
 (
@@ -1272,9 +1441,10 @@ from
 where people9 is not null
 order by visit_date
 
-
+```
 #### Day 11- CaseStudy2
 
+```
 SELECT employee_id,
 department_id,
 hire_date,
@@ -1291,12 +1461,13 @@ LAST_VALUE(salary)
     AS last_dep_salary
 FROM employees
 ORDER BY department_id
-
+```
 
 #### Day 15 - Date and Time Functions 
 
 **Q1 - DateDiff**
 
+```
 SELECT 
    employee_id, 
    first_name, 
@@ -1305,9 +1476,10 @@ SELECT
 FROM employees
 Having Total_years >= 28
 ORDER BY employee_id asc;
-
+```
 **Q2 - EXTRACT**
 
+```
 SELECT 
     employee_id, 
     first_name, 
@@ -1320,9 +1492,10 @@ SELECT
 FROM employees
 WHERE salary >= 5000 AND hire_date  BETWEEN '2000-01-01' AND '2000-01-31'
 ORDER BY employee_id asc;
-
+```
 Another approach
 
+```
 select 
     employee_id,
     first_name,
@@ -1339,8 +1512,11 @@ where
     and salary >5000
 order by employee_id;
 
+```
+
 Q4 **DateADD**
 
+```
 SELECT
     e.employee_id, 
     e.first_name, 
@@ -1359,10 +1535,11 @@ WHERE
     hire_date <= DATE_ADD('1998-01-01', INTERVAL 90 DAY) 
 
 ORDER BY employee_id asc;
-
+```
 
 Q7 **DateDiff**
 
+```
 SELECT
     e.employee_id, 
     e.first_name, 
@@ -1376,11 +1553,12 @@ ON e.department_id = d.department_id
 WHERE (DATEDIFF("2022-06-08",hire_date)/365) > 25 AND employee_id in (SELECT manager_id FROM employees)
 ORDER BY employee_id
 
+```
 Another approach
 
 
 **Q6 - DATE DIFF**
-
+```
 SELECT 
     user_id, 
     sum(number_of_comments) as comments_count
@@ -1390,9 +1568,11 @@ where
     datediff("2020-02-10",created_at) >= 0
 group by user_id
 ORDER BY user_id
+```
 
 Another Approach 
 
+```
 SELECT 
     user_id, 
     SUM(number_of_comments) As comments_count
@@ -1400,10 +1580,11 @@ FROM fb_comments
 WHERE created_at BETWEEN DATE_SUB("2020-02-10",INTERVAL 30 day) AND "2020-02-10"
 GROUP BY user_id
 ORDER BY user_id
-
+```
 
 **Q8; MAX Salary**
 
+```
 WITH data AS (
     SELECT
         *,
@@ -1422,11 +1603,12 @@ SELECT
 FROM data
 WHERE salary = max_salary
 ORDER BY department_id, employee_id
-
+```
 
 
 
 S5 - Day 15
+```
 SELECT 
     lower(trim(product_name)) as product_name, 
     DATE_FORMAT(sale_date, '%Y-%m') as sale_date, 
@@ -1434,20 +1616,23 @@ SELECT
 FROM sales
 group by lower(trim(product_name)),DATE_FORMAT(sale_date, '%Y-%m')
 order by product_name,sale_date
+```
 
 Day - 15 
 
+```
 SELECT
     YEAR(hire_date)AS 'Year',
     COUNT(employee_id) AS 'Employees_count'
 FROM employees
 GROUP BY Year
 ORDER BY Employees_count DESC, Year ASC;
+```
 
 Day 15 - A - Q2
 
 **TIMEDIFF & CIEL & COALSCE**
-
+```
 WITH selectemployees as
 (
    SELECT 
@@ -1463,7 +1648,7 @@ SELECT
    employee_id
 FROM selectemployees
 ORDER BY employee_id;
-
+```
 
 
 DAY 16 - CTE's
@@ -2041,3 +2226,22 @@ WITH PriceRanges AS
 SELECT PriceRange, TotalSales
 FROM `PriceRanges`
 ORDER BY TotalSales DESC;
+
+Day 20 - Additional Questions 
+Q1 - Manager Salary 
+
+SELECT
+   DISTINCT e1.employee_id,
+   e1.first_name,
+   e1.last_name,
+   e1.salary as manager_salary
+FROM employees e1 
+JOIN employees e2 
+ON e2.manager_id = e1.employee_id
+WHERE e2.salary > e1.salary/2
+ORDER by employee_id
+
+Q2
+select productCode from products
+where buyPrice in (Select max(buyPrice) as buyPrice from products where productLine='Ships'
+order by productCode)
